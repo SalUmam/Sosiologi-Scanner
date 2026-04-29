@@ -3,439 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sosiologi Scanner — Proyektor</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<title>Sosiologi Scanner — Layar Utama</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #FFFBF0;
-  --yellow: #FFD93D;
-  --orange: #FF6B35;
-  --pink: #FF6B9D;
-  --green: #06D6A0;
-  --blue: #4CC9F0;
-  --purple: #9B5DE5;
-  --text: #1a1a2e;
-  --muted: #7777aa;
-  --white: #ffffff;
-  --shadow: 3px 3px 0 #1a1a2e;
-  --shadow-sm: 2px 2px 0 #1a1a2e;
+  --bg: #FFFBF0; --yellow: #FFD93D; --orange: #FF6B35; --green: #06D6A0;
+  --text: #1a1a2e; --muted: #7777aa; --white: #ffffff;
 }
 body {
-  background: var(--bg);
-  background-image:
-    radial-gradient(circle at 5% 5%, rgba(255,217,61,0.25) 0%, transparent 30%),
-    radial-gradient(circle at 95% 95%, rgba(155,93,229,0.15) 0%, transparent 30%),
-    radial-gradient(circle at 95% 5%, rgba(76,201,240,0.2) 0%, transparent 25%),
-    radial-gradient(circle at 5% 95%, rgba(6,214,160,0.15) 0%, transparent 25%);
-  color: var(--text);
-  font-family: 'Nunito Sans', sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--muted) 1px, transparent 1px);
+  background-size: 30px 30px; color: var(--text); font-family: 'Nunito Sans', sans-serif;
+  height: 100vh; overflow: hidden; display: flex; flex-direction: column;
 }
-
-/* Decorative corner doodles */
-.corner-doodle {
-  position: fixed; font-size: 40px;
-  opacity: 0.07; pointer-events: none; z-index: 0;
-}
-.cd1 { top: 10px; left: 10px; transform: rotate(-15deg); }
-.cd2 { top: 10px; right: 10px; transform: rotate(15deg); }
-.cd3 { bottom: 10px; left: 10px; transform: rotate(10deg); }
-.cd4 { bottom: 10px; right: 10px; transform: rotate(-10deg); }
 
 .header {
-  position: relative; z-index: 1;
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 14px 28px;
-  border-bottom: 2px solid rgba(26,26,46,0.08);
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(8px);
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px; border-bottom: 3px solid rgba(26,26,46,0.1);
+  background: rgba(255,255,255,0.9); z-index: 10;
 }
-
-.header-left { display: flex; align-items: center; gap: 12px; }
-
 .header-logo {
-  background: var(--orange);
-  border: 2px solid var(--text);
-  border-radius: 10px;
-  padding: 4px 10px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px; font-weight: 900;
-  box-shadow: var(--shadow-sm);
-  color: white;
+  background: var(--orange); border: 2px solid var(--text); border-radius: 12px;
+  padding: 6px 14px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
+  color: white; box-shadow: 2px 2px 0 var(--text);
 }
+.header-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; }
 
-.header-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 18px; font-weight: 900;
-  color: var(--text);
-}
-
-.header-sub {
-  font-size: 11px; color: var(--muted); font-weight: 600;
-}
-
-.stats-row { display: flex; gap: 10px; align-items: center; }
-
-.stat-chip {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--white);
-  border: 2px solid var(--text);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px; font-weight: 800;
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
-}
-
-.stat-chip strong { color: var(--orange); }
-
-.live-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--green);
-  border: 1.5px solid var(--text);
-  animation: blink 1.2s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-
-.main {
-  position: relative; z-index: 1;
-  flex: 1; display: flex; overflow: hidden;
-}
-
-.bubble-stage {
-  flex: 1; position: relative; overflow: hidden;
-}
-
-.empty-state {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 12px;
-}
-.empty-icon { font-size: 64px; opacity: 0.2; }
-.empty-text {
-  font-family: 'Nunito', sans-serif;
-  font-size: 18px; font-weight: 800;
-  color: var(--muted); opacity: 0.6;
-}
-
-.bubble {
-  position: absolute; border-radius: 50%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  border: 3px solid var(--text);
-  transition:
-    left 0.8s cubic-bezier(0.34,1.2,0.64,1),
-    top 0.8s cubic-bezier(0.34,1.2,0.64,1),
-    width 0.6s cubic-bezier(0.34,1.56,0.64,1),
-    height 0.6s cubic-bezier(0.34,1.56,0.64,1);
-  animation: float var(--fdur,6s) ease-in-out infinite var(--fdelay,0s);
-}
-@keyframes float {
-  0%,100% { transform: translateY(0px) rotate(-1deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
-}
-.bubble-shadow {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(26,26,46,0.12);
-  bottom: -8px; left: 5%; right: 5%;
-  height: 14px;
-  filter: blur(4px);
-  z-index: -1;
-}
-
-.b-icon { line-height: 1; }
-.b-label { font-family: 'Nunito', sans-serif; font-weight: 900; text-align: center; line-height: 1.2; color: var(--text); }
-.b-count { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--text); opacity: 0.7; }
+.main { flex: 1; display: flex; position: relative; overflow: hidden; padding-bottom: 50px; }
+.bubble-stage { flex: 1; position: relative; }
 
 .sidebar {
-  width: 240px; flex-shrink: 0;
-  border-left: 2px solid rgba(26,26,46,0.1);
-  padding: 16px 14px;
-  background: rgba(255,255,255,0.5);
-  display: flex; flex-direction: column; gap: 4px;
-  overflow-y: auto;
+  width: 280px; border-left: 3px solid rgba(26,26,46,0.1); padding: 20px 16px;
+  background: rgba(255,255,255,0.8); z-index: 5; display: flex; flex-direction: column;
 }
+.sidebar-title { font-family: 'Nunito', sans-serif; font-weight: 900; margin-bottom: 12px; }
 
-.sidebar-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: 11px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted); margin-bottom: 8px;
+/* NEWS TICKER */
+.ticker-wrap {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+  background: var(--text); color: white; display: flex; align-items: center;
+  overflow: hidden; border-top: 3px solid var(--yellow); z-index: 20;
 }
+.ticker-label {
+  background: var(--orange); height: 100%; padding: 0 20px;
+  display: flex; align-items: center; font-family: 'Nunito', sans-serif;
+  font-weight: 900; font-size: 16px; z-index: 2; border-right: 3px solid white;
+}
+.ticker-content { display: flex; white-space: nowrap; animation: ticker 25s linear infinite; }
+@keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+.news-item { margin-right: 50px; font-size: 18px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+.news-tag { background: var(--yellow); color: var(--text); padding: 2px 8px; border-radius: 8px; font-size: 14px; font-weight: 900; }
+.news-func { background: var(--green); color: var(--text); padding: 2px 8px; border-radius: 8px; font-size: 14px; font-weight: 900; }
 
-.bar-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
-.bar-icon { font-size: 16px; flex-shrink: 0; }
-.bar-info { flex: 1; min-width: 0; }
-.bar-name {
-  font-family: 'Nunito', sans-serif;
-  font-size: 12px; font-weight: 800;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+.bubble {
+  position: absolute; border-radius: 50%; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; border: 4px solid var(--text);
+  transition: all 1s cubic-bezier(0.34,1.2,0.64,1); box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+  animation: float 5s ease-in-out infinite; background: white;
 }
-.bar-track {
-  height: 6px; border-radius: 3px; margin-top: 3px;
-  background: rgba(26,26,46,0.08);
-  border: 1px solid rgba(26,26,46,0.1);
-  overflow: hidden;
-}
-.bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
-.bar-val {
-  font-family: 'Nunito', sans-serif;
-  font-size: 14px; font-weight: 900;
-  min-width: 22px; text-align: right;
-}
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-.group-indicators {
-  margin-top: auto; padding-top: 12px;
-  border-top: 2px dashed rgba(26,26,46,0.1);
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-}
-
+.group-indicators { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .group-chip {
-  display: flex; align-items: center; gap: 5px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 11px; font-weight: 800;
-  padding: 5px 8px; border-radius: 8px;
-  border: 2px solid rgba(26,26,46,0.12);
-  color: var(--muted); background: transparent;
-  transition: all 0.3s;
+  text-align: center; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900;
+  padding: 8px; border-radius: 8px; border: 2px solid rgba(0,0,0,0.1); color: var(--muted);
 }
-.group-chip.active {
-  background: var(--green); color: var(--text);
-  border-color: var(--text);
-  box-shadow: var(--shadow-sm);
-}
-.group-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.group-chip.active { background: var(--green); color: var(--text); border-color: var(--text); }
 
-.reset-btn {
-  position: fixed; bottom: 14px; right: 14px;
-  font-family: 'Nunito', sans-serif;
-  font-size: 11px; font-weight: 800;
-  color: var(--muted); background: white;
-  border: 2px solid rgba(26,26,46,0.15);
-  border-radius: 8px; padding: 6px 12px;
-  cursor: pointer; z-index: 10;
-  transition: all 0.15s;
-}
-.reset-btn:hover { color: var(--text); border-color: var(--text); box-shadow: var(--shadow-sm); }
-
-@keyframes bubble-in {
-  from { transform: scale(0) rotate(-5deg); opacity: 0; }
-  to { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-.new-bubble { animation: bubble-in 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.reset-btn { position: fixed; top: 80px; left: 16px; font-size: 12px; padding: 6px 12px; cursor: pointer; z-index: 100;}
 </style>
 </head>
 <body>
 
-<div class="corner-doodle cd1">🗞️</div>
-<div class="corner-doodle cd2">🔬</div>
-<div class="corner-doodle cd3">💡</div>
-<div class="corner-doodle cd4">📊</div>
-
 <div class="header">
-  <div class="header-left">
-    <div class="header-logo">🔬 Sos-Scanner</div>
-    <div>
-      <div class="header-title">Peta Gejala Sosial Kelas</div>
-      <div class="header-sub">Etnografi Digital — Real-time</div>
-    </div>
-  </div>
-  <div class="stats-row">
-    <div class="stat-chip"><div class="live-dot"></div> Live</div>
-    <div class="stat-chip">Total: <strong id="stat-total">0</strong></div>
-    <div class="stat-chip">Kelompok: <strong id="stat-groups">0</strong>/4</div>
-    <div class="stat-chip">Jenis: <strong id="stat-types">0</strong></div>
-  </div>
+  <div class="header-logo">🔬 Sos-Scanner</div>
+  <div class="header-title">Peta Gejala Sosial Kelas (Fase E)</div>
 </div>
+
+<button class="reset-btn" onclick="resetAll()">🔄 Reset Data</button>
 
 <div class="main">
-  <div class="bubble-stage" id="bubble-stage">
-    <div class="empty-state" id="empty-state">
-      <div class="empty-icon">🗞️</div>
-      <div class="empty-text">Menunggu temuan dari siswa...</div>
-    </div>
-  </div>
+  <div class="bubble-stage" id="bubble-stage"></div>
   <div class="sidebar">
-    <div class="sidebar-title">🏆 Peringkat Gejala</div>
+    <div class="sidebar-title">🏆 Top Gejala Sosial</div>
     <div id="bar-list"></div>
     <div class="group-indicators" id="group-indicators">
-      ${[1,2,3,4].map(n=>`
-        <div class="group-chip" id="gd-${n}">
-          <div class="group-chip-dot"></div>Kel. ${n}
-        </div>`).join('')}
+      <div class="group-chip" id="gd-1">Kel. 1</div>
+      <div class="group-chip" id="gd-2">Kel. 2</div>
+      <div class="group-chip" id="gd-3">Kel. 3</div>
     </div>
   </div>
 </div>
 
-<button class="reset-btn" onclick="resetAll()">🔄 Reset</button>
+<div class="ticker-wrap">
+  <div class="ticker-label">🔴 LIVE NEWS</div>
+  <div class="ticker-content" id="ticker-content">
+    <div class="news-item">Menunggu observasi dari siswa...</div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, onValue, onChildAdded, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAmeoRLm2qq48uSv9CbML7RB5abKakn73I",
   authDomain: "sosiologi-scanner.firebaseapp.com",
   databaseURL: "https://sosiologi-scanner-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "sosiologi-scanner",
-  storageBucket: "sosiologi-scanner.firebasestorage.app",
-  messagingSenderId: "203021862305",
-  appId: "1:203021862305:web:208fab5cb454bf06a937e0"
+  storageBucket: "sosiologi-scanner.firebasestorage.app"
 };
-
-const CATEGORIES = [
-  { id: 'kemiskinan', label: 'Kemiskinan', icon: '🏚️', bg: '#FFE8D6', border: '#FF6B35' },
-  { id: 'konflik', label: 'Konflik Sosial', icon: '⚡', bg: '#FFE0E0', border: '#FF4444' },
-  { id: 'budaya', label: 'Budaya', icon: '🎭', bg: '#EDE0FF', border: '#9B5DE5' },
-  { id: 'pendidikan', label: 'Pendidikan', icon: '📚', bg: '#D6FFF0', border: '#06D6A0' },
-  { id: 'lingkungan', label: 'Lingkungan', icon: '🌿', bg: '#DFFFD6', border: '#4CAF50' },
-  { id: 'teknologi', label: 'Teknologi', icon: '📱', bg: '#D6F0FF', border: '#4CC9F0' },
-  { id: 'gender', label: 'Gender', icon: '⚖️', bg: '#FFD6EE', border: '#FF6B9D' },
-  { id: 'kriminal', label: 'Kriminalitas', icon: '🔍', bg: '#FFF8D6', border: '#FFD93D' },
-];
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-let votes = {}, groups = {}, positions = {};
 
-function calcLayout(ids, W, H) {
-  const total = ids.reduce((s,id) => s+(votes[id]||0), 0) || 1;
-  const MAX_R = Math.min(W,H) * 0.2, MIN_R = 42;
-  const placed = [];
-  const result = {};
-  ids.sort((a,b) => (votes[b]||0)-(votes[a]||0));
-  ids.forEach(id => {
-    const v = votes[id]||0;
-    const r = Math.round(MIN_R + (MAX_R-MIN_R) * Math.sqrt(v/total));
-    let x, y, tries = 0;
-    const prev = positions[id];
-    if (prev) { x=prev.x; y=prev.y; }
-    else {
-      do {
-        x = r+20+Math.random()*(W-2*r-40);
-        y = r+20+Math.random()*(H-2*r-40);
-        tries++;
-      } while(tries<120 && placed.some(p=>Math.hypot(x-p.x,y-p.y)<r+p.r+16));
-    }
-    placed.push({x,y,r,id});
-    result[id] = {x,y,r};
-  });
-  return result;
-}
+const CATEGORIES = [
+  { id: 'kemiskinan', label: 'Kemiskinan', icon: '🏚️', border: '#FF6B35' },
+  { id: 'konflik', label: 'Konflik Sosial', icon: '⚡', border: '#FF4444' },
+  { id: 'budaya', label: 'Budaya', icon: '🎭', border: '#9B5DE5' },
+  { id: 'pendidikan', label: 'Pendidikan', icon: '📚', border: '#06D6A0' },
+  { id: 'lingkungan', label: 'Lingkungan', icon: '🌿', border: '#4CAF50' },
+  { id: 'teknologi', label: 'Teknologi', icon: '📱', border: '#4CC9F0' },
+  { id: 'gender', label: 'Gender', icon: '⚖️', border: '#FF6B9D' },
+  { id: 'kriminal', label: 'Kriminalitas', icon: '🔍', border: '#F9A826' },
+];
 
+let votes = {}, groups = {}, positions = {}, newsArray = [];
+
+// Bubble Logic
 function renderBubbles() {
   const stage = document.getElementById('bubble-stage');
   const W = stage.offsetWidth, H = stage.offsetHeight;
   const ids = CATEGORIES.map(c=>c.id).filter(id=>(votes[id]||0)>0);
-  document.getElementById('empty-state').style.display = ids.length===0 ? 'flex' : 'none';
+  
   if (!ids.length) return;
-
-  const layout = calcLayout(ids, W, H);
-  positions = layout;
-
-  ids.forEach(id => {
+  const total = ids.reduce((s,id) => s+(votes[id]||0), 0) || 1;
+  const MAX_R = Math.min(W,H) * 0.22, MIN_R = 60;
+  
+  ids.forEach((id, index) => {
     const cat = CATEGORIES.find(c=>c.id===id);
-    const {x,y,r} = layout[id];
     const v = votes[id]||0;
-    const iSz = Math.max(16, Math.round(r*0.38));
-    const lSz = Math.max(10, Math.round(r*0.16));
-    const cSz = Math.max(11, Math.round(r*0.2));
+    const r = Math.round(MIN_R + (MAX_R-MIN_R) * Math.sqrt(v/total));
+    
+    // Simple positioning
+    let x = (W / (ids.length + 1)) * (index + 1);
+    let y = H / 2 + (index % 2 === 0 ? -30 : 30);
 
     let el = document.getElementById('bubble-'+id);
-    const isNew = !el;
-    if (isNew) {
+    if (!el) {
       el = document.createElement('div');
-      el.id = 'bubble-'+id;
-      el.className = 'bubble new-bubble';
-      el.style.setProperty('--fdur', `${4+Math.random()*4}s`);
-      el.style.setProperty('--fdelay', `${Math.random()*3}s`);
+      el.id = 'bubble-'+id; el.className = 'bubble';
       stage.appendChild(el);
     }
 
-    el.style.cssText = `
-      position:absolute;
-      width:${r*2}px;height:${r*2}px;
-      left:${Math.round(x-r)}px;top:${Math.round(y-r)}px;
-      background:${cat.bg};
-      border:3px solid ${cat.border};
-      border-radius:50%;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      box-shadow:4px 4px 0 rgba(26,26,46,0.15);
-      --fdur:${el.style.getPropertyValue('--fdur')||'6s'};
-      --fdelay:${el.style.getPropertyValue('--fdelay')||'0s'};
-      animation:float var(--fdur) ease-in-out infinite var(--fdelay);
-    `;
-
+    el.style.width = `${r*2}px`; el.style.height = `${r*2}px`;
+    el.style.left = `${x-r}px`; el.style.top = `${y-r}px`;
+    el.style.borderColor = cat.border;
+    
     el.innerHTML = `
-      <div style="font-size:${iSz}px;line-height:1;margin-bottom:4px;">${cat.icon}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:${lSz}px;font-weight:900;color:#1a1a2e;text-align:center;padding:0 6px;line-height:1.2;">${cat.label}</div>
-      <div style="font-family:'Nunito',sans-serif;font-size:${cSz}px;font-weight:800;color:${cat.border};margin-top:3px;">${v}</div>
+      <div style="font-size:${r*0.5}px;line-height:1;">${cat.icon}</div>
+      <div style="font-family:'Nunito',sans;font-size:${r*0.2}px;font-weight:900;">${cat.label}</div>
+      <div style="font-family:'Nunito',sans;font-size:${r*0.25}px;font-weight:900;color:${cat.border};">${v}</div>
     `;
   });
-
-  CATEGORIES.forEach(c => {
-    if (!ids.includes(c.id)) {
-      const el = document.getElementById('bubble-'+c.id);
-      if (el) el.remove();
-    }
-  });
 }
 
-function renderBars() {
-  const max = Math.max(...CATEGORIES.map(c=>votes[c.id]||0), 1);
-  const sorted = [...CATEGORIES].filter(c=>(votes[c.id]||0)>0).sort((a,b)=>(votes[b.id]||0)-(votes[a.id]||0));
-  document.getElementById('bar-list').innerHTML = sorted.map(c => {
-    const v = votes[c.id]||0;
-    const pct = Math.round(v/max*100);
-    return `<div class="bar-row">
-      <div class="bar-icon">${c.icon}</div>
-      <div class="bar-info">
-        <div class="bar-name">${c.label}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c.border}"></div></div>
-      </div>
-      <div class="bar-val">${v}</div>
-    </div>`;
-  }).join('');
-}
-
-function renderStats() {
-  const total = Object.values(votes).reduce((a,b)=>a+b,0);
-  const types = Object.values(votes).filter(v=>v>0).length;
-  const grps = Object.keys(groups||{}).length;
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-groups').textContent = grps;
-  document.getElementById('stat-types').textContent = types;
-  [1,2,3,4].forEach(n => {
-    document.getElementById('gd-'+n)?.classList.toggle('active', !!(groups&&groups[n]));
-  });
-}
-
-onValue(ref(db,'votes'), snap => {
-  votes = snap.val()||{};
-  renderBubbles(); renderBars(); renderStats();
+// News Ticker Logic
+onChildAdded(ref(db, 'news'), snap => {
+  const data = snap.val();
+  const ticker = document.getElementById('ticker-content');
+  if(newsArray.length === 0) ticker.innerHTML = ''; // Hapus teks menunggu
+  newsArray.push(data);
+  
+  const newsHtml = `
+    <div class="news-item">
+      <span>[Kel. ${data.group}] "${data.title}"</span>
+      <span class="news-tag">${data.kategori}</span>
+      <span class="news-func">Pendekatan: ${data.fungsi}</span>
+    </div>
+  `;
+  ticker.innerHTML += newsHtml;
 });
+
+onValue(ref(db,'votes'), snap => { votes = snap.val()||{}; renderBubbles(); });
 onValue(ref(db,'groups'), snap => {
   groups = snap.val()||{};
-  renderStats();
+  [1,2,3].forEach(n => document.getElementById('gd-'+n).classList.toggle('active', !!groups[n]));
 });
 
 window.resetAll = async () => {
-  if (!confirm('Reset semua data?')) return;
-  await remove(ref(db,'votes'));
-  await remove(ref(db,'groups'));
-  votes={}; groups={}; positions={};
-  document.getElementById('bubble-stage').querySelectorAll('.bubble').forEach(b=>b.remove());
-  document.getElementById('empty-state').style.display='flex';
-  renderBars(); renderStats();
+  if(!confirm('Reset semua data?')) return;
+  await remove(ref(db,'votes')); await remove(ref(db,'groups')); await remove(ref(db,'news'));
+  location.reload();
 };
 </script>
 </body>
