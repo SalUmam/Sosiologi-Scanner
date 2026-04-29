@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sosiologi Scanner — Layar Proyektor</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #070611;
+    --surface: #100f1e;
+    --surface2: #181729;
+    --text: #f0eff8;
+    --muted: #4a4966;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--min, 0.1); }
+    50% { opacity: var(--max, 0.4); }
+  }
+
+  .header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(20,15,50,0.8) 0%, transparent 100%);
+    flex-shrink: 0;
+  }
+
+  .header-left { display: flex; align-items: baseline; gap: 12px; }
+
+  .header-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .stat-pill strong { color: #a78bfa; font-weight: 600; }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  .main {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .bubble-stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    transition: left 0.8s cubic-bezier(0.34, 1.2, 0.64, 1),
+                top 0.8s cubic-bezier(0.34, 1.2, 0.64, 1),
+                width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: float var(--fdur, 6s) ease-in-out infinite var(--fdelay, 0s);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .bubble-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .b-icon { line-height: 1; }
+  .b-label { font-weight: 600; text-align: center; line-height: 1.2; }
+  .b-count { font-weight: 500; opacity: 0.85; }
+
+  .b-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid;
+    opacity: 0.3;
+    animation: ring-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes ring-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.06); opacity: 0.15; }
+  }
+
+  .sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sidebar-title {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+  }
+
+  .bar-icon { font-size: 15px; flex-shrink: 0; }
+
+  .bar-info { flex: 1; min-width: 0; }
+
+  .bar-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bar-track {
+    height: 5px;
+    background: var(--surface2);
+    border-radius: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .bar-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 20px;
+    text-align: right;
+  }
+
+  .empty-state {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 48px; opacity: 0.3; }
+  .empty-text { font-size: 14px; opacity: 0.6; font-family: 'Instrument Serif', serif; font-style: italic; }
+
+  .group-indicators {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .group-dot {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+
+  .group-dot.active {
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.3);
+    background: rgba(52, 211, 153, 0.08);
+  }
+
+  .group-dot-circle {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .reset-btn {
+    position: fixed;
+    bottom: 16px; right: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+  }
+
+  .reset-btn:hover { color: var(--text); }
+
+  .new-bubble-anim {
+    animation: bubble-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes bubble-in {
+    from { transform: scale(0) translateY(0); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-title">Peta Gejala Sosial Kelas 🌏</div>
+    <div class="header-sub">Etnografi Digital — Live</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill"><div class="live-dot"></div> Live</div>
+    <div class="stat-pill">Total: <strong id="stat-total">0</strong></div>
+    <div class="stat-pill">Kelompok: <strong id="stat-groups">0</strong>/4</div>
+    <div class="stat-pill">Jenis gejala: <strong id="stat-types">0</strong></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="bubble-stage" id="bubble-stage">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🔬</div>
+      <div class="empty-text">Menunggu temuan dari siswa...</div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="sidebar-title">Peringkat Gejala</div>
+    <div id="bar-list"></div>
+    <div class="group-indicators" id="group-indicators">
+      ${[1,2,3,4].map(n => `
+        <div class="group-dot" id="gd-${n}">
+          <div class="group-dot-circle"></div>
+          Kel. ${n}
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</div>
+
+<button class="reset-btn" onclick="resetAll()">Reset Data</button>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAmeoRLm2qq48uSv9CbML7RB5abKakn73I",
+  authDomain: "sosiologi-scanner.firebaseapp.com",
+  databaseURL: "https://sosiologi-scanner-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sosiologi-scanner",
+  storageBucket: "sosiologi-scanner.firebasestorage.app",
+  messagingSenderId: "203021862305",
+  appId: "1:203021862305:web:208fab5cb454bf06a937e0"
+};
+
+const CATEGORIES = [
+  { id: 'kemiskinan', label: 'Kemiskinan', icon: '🏚️', color: '#fb923c', bg: 'rgba(251,146,60,0.15)', ring: 'rgba(251,146,60,0.5)' },
+  { id: 'konflik', label: 'Konflik Sosial', icon: '⚡', color: '#f87171', bg: 'rgba(248,113,113,0.15)', ring: 'rgba(248,113,113,0.5)' },
+  { id: 'budaya', label: 'Budaya', icon: '🎭', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)', ring: 'rgba(167,139,250,0.5)' },
+  { id: 'pendidikan', label: 'Pendidikan', icon: '📚', color: '#34d399', bg: 'rgba(52,211,153,0.15)', ring: 'rgba(52,211,153,0.5)' },
+  { id: 'lingkungan', label: 'Lingkungan', icon: '🌿', color: '#4ade80', bg: 'rgba(74,222,128,0.15)', ring: 'rgba(74,222,128,0.5)' },
+  { id: 'teknologi', label: 'Teknologi', icon: '📱', color: '#60a5fa', bg: 'rgba(96,165,250,0.15)', ring: 'rgba(96,165,250,0.5)' },
+  { id: 'gender', label: 'Gender', icon: '⚖️', color: '#f472b6', bg: 'rgba(244,114,182,0.15)', ring: 'rgba(244,114,182,0.5)' },
+  { id: 'kriminal', label: 'Kriminalitas', icon: '🔍', color: '#fbbf24', bg: 'rgba(251,191,36,0.15)', ring: 'rgba(251,191,36,0.5)' },
+];
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function makeStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 1.5 + 0.5;
+    s.style.cssText = `
+      width: ${size}px; height: ${size}px;
+      left: ${Math.random()*100}%; top: ${Math.random()*100}%;
+      --d: ${2+Math.random()*4}s; --delay: ${Math.random()*4}s;
+      --min: ${0.05+Math.random()*0.1}; --max: ${0.2+Math.random()*0.5};
+    `;
+    container.appendChild(s);
+  }
+}
+makeStars();
+
+let votes = {};
+let groups = {};
+let positions = {};
+
+function getStage() {
+  return document.getElementById('bubble-stage');
+}
+
+function calcLayout(activeIds, W, H) {
+  const n = activeIds.length;
+  if (n === 0) return {};
+  const maxV = Math.max(...activeIds.map(id => votes[id] || 0), 1);
+  const total = activeIds.reduce((s, id) => s + (votes[id] || 0), 0) || 1;
+  const result = {};
+  const placed = [];
+  const MAX_R = Math.min(W, H) * 0.22;
+  const MIN_R = 40;
+
+  activeIds.sort((a, b) => (votes[b] || 0) - (votes[a] || 0));
+  activeIds.forEach((id, i) => {
+    const v = votes[id] || 0;
+    const ratio = v / total;
+    const r = Math.round(MIN_R + (MAX_R - MIN_R) * Math.sqrt(ratio));
+    let x, y, tries = 0;
+    const prev = positions[id];
+    if (prev) { x = prev.x; y = prev.y; }
+    else {
+      do {
+        x = r + 20 + Math.random() * (W - 2 * r - 40);
+        y = r + 20 + Math.random() * (H - 2 * r - 40);
+        tries++;
+      } while (tries < 120 && placed.some(p => Math.hypot(x - p.x, y - p.y) < r + p.r + 12));
+    }
+    placed.push({ x, y, r, id });
+    result[id] = { x, y, r };
+  });
+  return result;
+}
+
+function renderBubbles(data) {
+  const stage = getStage();
+  const W = stage.offsetWidth;
+  const H = stage.offsetHeight;
+  const activeIds = CATEGORIES.map(c => c.id).filter(id => (data[id] || 0) > 0);
+
+  document.getElementById('empty-state').style.display = activeIds.length === 0 ? 'flex' : 'none';
+  if (activeIds.length === 0) return;
+
+  const layout = calcLayout(activeIds, W, H);
+  positions = layout;
+
+  activeIds.forEach(id => {
+    const cat = CATEGORIES.find(c => c.id === id);
+    const { x, y, r } = layout[id];
+    const v = data[id] || 0;
+    const iconSize = Math.max(14, Math.round(r * 0.38));
+    const labelSize = Math.max(9, Math.round(r * 0.17));
+    const countSize = Math.max(10, Math.round(r * 0.2));
+
+    let el = document.getElementById('bubble-' + id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'bubble-' + id;
+      el.className = 'bubble new-bubble-anim';
+      el.style.setProperty('--fdur', `${4 + Math.random() * 4}s`);
+      el.style.setProperty('--fdelay', `${Math.random() * 3}s`);
+      stage.appendChild(el);
+    }
+
+    el.style.cssText = `
+      position: absolute;
+      width: ${r*2}px; height: ${r*2}px;
+      left: ${Math.round(x - r)}px; top: ${Math.round(y - r)}px;
+      background: ${cat.bg};
+      border: 1.5px solid ${cat.color};
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: left 0.8s cubic-bezier(0.34,1.2,0.64,1), top 0.8s cubic-bezier(0.34,1.2,0.64,1), width 0.6s, height 0.6s;
+      animation: float var(--fdur,6s) ease-in-out infinite var(--fdelay,0s);
+      --fdur: ${el.style.getPropertyValue('--fdur') || '6s'};
+      --fdelay: ${el.style.getPropertyValue('--fdelay') || '0s'};
+    `;
+
+    el.innerHTML = `
+      <div style="position:absolute;inset:-5px;border-radius:50%;border:1.5px solid ${cat.ring};animation:ring-pulse 2s ease-in-out infinite;opacity:0.25;"></div>
+      <div style="font-size:${iconSize}px;line-height:1;margin-bottom:3px;">${cat.icon}</div>
+      <div style="font-size:${labelSize}px;font-weight:600;color:${cat.color};text-align:center;padding:0 6px;line-height:1.2;">${cat.label}</div>
+      <div style="font-size:${countSize}px;font-weight:500;color:${cat.color};opacity:0.8;margin-top:2px;">${v}</div>
+    `;
+  });
+
+  CATEGORIES.forEach(cat => {
+    if (!activeIds.includes(cat.id)) {
+      const el = document.getElementById('bubble-' + cat.id);
+      if (el) el.remove();
+    }
+  });
+}
+
+function renderBars(data) {
+  const max = Math.max(...CATEGORIES.map(c => data[c.id] || 0), 1);
+  const sorted = [...CATEGORIES]
+    .filter(c => (data[c.id] || 0) > 0)
+    .sort((a, b) => (data[b.id] || 0) - (data[a.id] || 0));
+
+  document.getElementById('bar-list').innerHTML = sorted.map(c => {
+    const v = data[c.id] || 0;
+    const pct = Math.round((v / max) * 100);
+    return `
+      <div class="bar-row">
+        <div class="bar-icon">${c.icon}</div>
+        <div class="bar-info">
+          <div class="bar-name">${c.label}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${pct}%;background:${c.color}"></div>
+          </div>
+        </div>
+        <div class="bar-val">${v}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderStats(data, groupData) {
+  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  const types = Object.values(data).filter(v => v > 0).length;
+  const grpCount = Object.keys(groupData || {}).length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-groups').textContent = grpCount;
+  document.getElementById('stat-types').textContent = types;
+
+  [1,2,3,4].forEach(n => {
+    const el = document.getElementById('gd-' + n);
+    if (el) el.classList.toggle('active', !!(groupData && groupData[n]));
+  });
+}
+
+onValue(ref(db, 'votes'), snap => {
+  votes = snap.val() || {};
+  renderBubbles(votes);
+  renderBars(votes);
+});
+
+onValue(ref(db, 'groups'), snap => {
+  groups = snap.val() || {};
+  renderStats(votes, groups);
+});
+
+window.resetAll = async function() {
+  if (!confirm('Reset semua data? Ini tidak bisa dibatalkan.')) return;
+  await remove(ref(db, 'votes'));
+  await remove(ref(db, 'groups'));
+  votes = {}; groups = {};
+  positions = {};
+  document.getElementById('bubble-stage').querySelectorAll('.bubble').forEach(b => b.remove());
+  document.getElementById('empty-state').style.display = 'flex';
+  renderBars({});
+  renderStats({}, {});
+};
+</script>
+</body>
+</html>

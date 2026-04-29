@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sosiologi Scanner — Input Siswa</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0e17;
+    --surface: #1a1928;
+    --surface2: #232235;
+    --accent: #a78bfa;
+    --accent2: #34d399;
+    --accent3: #f87171;
+    --text: #f0eff8;
+    --muted: #6b6a85;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  .hero {
+    padding: 32px 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #1a1040 0%, var(--bg) 100%);
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .section {
+    padding: 20px 16px 0;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .group-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .group-btn {
+    padding: 10px 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .group-btn:hover { border-color: var(--accent); color: var(--text); }
+  .group-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f0e17;
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 16px 0;
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 20px 16px 0;
+  }
+
+  .cat-card {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 14px;
+  }
+
+  .cat-card.selected { border-width: 2px; }
+  .cat-card.selected::before { opacity: 0.08; }
+
+  .cat-card[data-id="kemiskinan"] { --c: #fb923c; }
+  .cat-card[data-id="konflik"] { --c: #f87171; }
+  .cat-card[data-id="budaya"] { --c: #a78bfa; }
+  .cat-card[data-id="pendidikan"] { --c: #34d399; }
+  .cat-card[data-id="lingkungan"] { --c: #4ade80; }
+  .cat-card[data-id="teknologi"] { --c: #60a5fa; }
+  .cat-card[data-id="gender"] { --c: #f472b6; }
+  .cat-card[data-id="kriminal"] { --c: #fbbf24; }
+
+  .cat-card.selected {
+    border-color: var(--c);
+    background: color-mix(in srgb, var(--c) 12%, var(--surface));
+  }
+
+  .cat-card::before { background: var(--c, white); }
+
+  .cat-icon { font-size: 24px; margin-bottom: 6px; }
+  .cat-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .cat-desc { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+  .checkmark {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--c, var(--accent));
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cat-card.selected .checkmark { display: flex; }
+
+  .checkmark svg { width: 12px; height: 12px; }
+
+  .submit-wrap {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 24px;
+    background: linear-gradient(0deg, var(--bg) 60%, transparent);
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: #0f0e17;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .submit-btn.ready {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .submit-btn.ready:active { transform: scale(0.98); }
+
+  .success-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+    z-index: 100;
+  }
+
+  .success-screen.show { display: flex; }
+
+  .success-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent2) 20%, transparent);
+    border: 2px solid var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 24px;
+    animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .success-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .back-btn {
+    padding: 12px 28px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .counter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    color: var(--accent);
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .connecting {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .dot-anim::after {
+    content: '...';
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">Etnografi Digital</div>
+  <h1 class="hero-title">Sosiologi Scanner 🔬</h1>
+  <p class="hero-sub">Temukan gejala sosial dari koran — laporkan ke kelas!</p>
+</div>
+
+<div id="main-content">
+  <div class="connecting"><span class="dot-anim">Menghubungkan ke database</span></div>
+</div>
+
+<div class="submit-wrap">
+  <button class="submit-btn" id="submit-btn" onclick="submitVote()">Kirim Temuan</button>
+</div>
+
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Temuan Terkirim!</div>
+  <div class="success-sub" id="success-msg">Kontribusimu sudah masuk ke peta gejala sosial kelas.</div>
+  <button class="back-btn" onclick="resetForm()">Kirim Lagi</button>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, runTransaction, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAmeoRLm2qq48uSv9CbML7RB5abKakn73I",
+  authDomain: "sosiologi-scanner.firebaseapp.com",
+  databaseURL: "https://sosiologi-scanner-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "sosiologi-scanner",
+  storageBucket: "sosiologi-scanner.firebasestorage.app",
+  messagingSenderId: "203021862305",
+  appId: "1:203021862305:web:208fab5cb454bf06a937e0"
+};
+
+const CATEGORIES = [
+  { id: 'kemiskinan', label: 'Kemiskinan', desc: 'Ketimpangan ekonomi', icon: '🏚️' },
+  { id: 'konflik', label: 'Konflik Sosial', desc: 'Pertikaian kelompok', icon: '⚡' },
+  { id: 'budaya', label: 'Budaya & Tradisi', desc: 'Nilai & norma sosial', icon: '🎭' },
+  { id: 'pendidikan', label: 'Pendidikan', desc: 'Akses & kualitas', icon: '📚' },
+  { id: 'lingkungan', label: 'Lingkungan', desc: 'Isu alam & sosial', icon: '🌿' },
+  { id: 'teknologi', label: 'Teknologi & Media', desc: 'Dampak digital', icon: '📱' },
+  { id: 'gender', label: 'Gender & Kesetaraan', desc: 'Hak & peran sosial', icon: '⚖️' },
+  { id: 'kriminal', label: 'Kriminalitas', desc: 'Penyimpangan sosial', icon: '🔍' },
+];
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let selectedGroup = null;
+let selectedCats = new Set();
+
+function renderMain() {
+  const content = document.getElementById('main-content');
+  content.innerHTML = `
+    <div class="section">
+      <div class="section-label">Kelompokmu</div>
+      <div class="group-grid">
+        ${[1,2,3,4].map(n => `
+          <button class="group-btn ${selectedGroup === n ? 'active' : ''}" onclick="selectGroup(${n})">
+            Kel. ${n}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section" style="padding-bottom: 8px;">
+      <div class="section-label">
+        Gejala sosial yang kamu temukan
+        ${selectedCats.size > 0 ? `<span class="counter-badge">${selectedCats.size} dipilih</span>` : ''}
+      </div>
+    </div>
+    <div class="cat-grid">
+      ${CATEGORIES.map(c => `
+        <div class="cat-card ${selectedCats.has(c.id) ? 'selected' : ''}" data-id="${c.id}" onclick="toggleCat('${c.id}')">
+          <div class="checkmark">
+            <svg viewBox="0 0 12 12" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="#0f0e17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="cat-icon">${c.icon}</div>
+          <div class="cat-name">${c.label}</div>
+          <div class="cat-desc">${c.desc}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  updateSubmitBtn();
+}
+
+window.selectGroup = function(n) {
+  selectedGroup = n;
+  renderMain();
+};
+
+window.toggleCat = function(id) {
+  if (selectedCats.has(id)) selectedCats.delete(id);
+  else selectedCats.add(id);
+  renderMain();
+};
+
+function updateSubmitBtn() {
+  const btn = document.getElementById('submit-btn');
+  if (selectedGroup && selectedCats.size > 0) {
+    btn.classList.add('ready');
+    btn.textContent = `Kirim ${selectedCats.size} Temuan →`;
+  } else {
+    btn.classList.remove('ready');
+    btn.textContent = 'Pilih kelompok & gejala dulu';
+  }
+}
+
+window.submitVote = async function() {
+  if (!selectedGroup || selectedCats.size === 0) return;
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Mengirim...';
+  btn.classList.remove('ready');
+
+  try {
+    for (const catId of selectedCats) {
+      const catRef = ref(db, `votes/${catId}`);
+      await runTransaction(catRef, (current) => (current || 0) + 1);
+    }
+    const groupRef = ref(db, `groups/${selectedGroup}`);
+    await runTransaction(groupRef, () => true);
+
+    const msg = `Kelompok ${selectedGroup} menemukan: ${[...selectedCats].map(id => CATEGORIES.find(c=>c.id===id)?.label).join(', ')}`;
+    document.getElementById('success-msg').textContent = msg;
+    document.getElementById('success-screen').classList.add('show');
+  } catch(e) {
+    btn.textContent = 'Gagal kirim, coba lagi';
+    btn.classList.add('ready');
+  }
+};
+
+window.resetForm = function() {
+  selectedGroup = null;
+  selectedCats = new Set();
+  document.getElementById('success-screen').classList.remove('show');
+  renderMain();
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Kirim Temuan';
+};
+
+renderMain();
+</script>
+</body>
+</html>
