@@ -3,315 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sosiologi Scanner — Input Siswa</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Sosiologi Scanner</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #0f0e17;
-    --surface: #1a1928;
-    --surface2: #232235;
-    --accent: #a78bfa;
-    --accent2: #34d399;
-    --accent3: #f87171;
-    --text: #f0eff8;
-    --muted: #6b6a85;
-    --border: rgba(255,255,255,0.08);
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    padding: 0 0 80px;
-  }
-
-  .hero {
-    padding: 32px 20px 24px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, #1a1040 0%, var(--bg) 100%);
-  }
-
-  .hero-eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-
-  .hero-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 28px;
-    line-height: 1.2;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .hero-sub {
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .section {
-    padding: 20px 16px 0;
-  }
-
-  .section-label {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  .group-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-
-  .group-btn {
-    padding: 10px 4px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-
-  .group-btn:hover { border-color: var(--accent); color: var(--text); }
-  .group-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #0f0e17;
-    font-weight: 600;
-  }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 16px 0;
-  }
-
-  .cat-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 20px 16px 0;
-  }
-
-  .cat-card {
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    padding: 14px 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cat-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.2s;
-    border-radius: 14px;
-  }
-
-  .cat-card.selected { border-width: 2px; }
-  .cat-card.selected::before { opacity: 0.08; }
-
-  .cat-card[data-id="kemiskinan"] { --c: #fb923c; }
-  .cat-card[data-id="konflik"] { --c: #f87171; }
-  .cat-card[data-id="budaya"] { --c: #a78bfa; }
-  .cat-card[data-id="pendidikan"] { --c: #34d399; }
-  .cat-card[data-id="lingkungan"] { --c: #4ade80; }
-  .cat-card[data-id="teknologi"] { --c: #60a5fa; }
-  .cat-card[data-id="gender"] { --c: #f472b6; }
-  .cat-card[data-id="kriminal"] { --c: #fbbf24; }
-
-  .cat-card.selected {
-    border-color: var(--c);
-    background: color-mix(in srgb, var(--c) 12%, var(--surface));
-  }
-
-  .cat-card::before { background: var(--c, white); }
-
-  .cat-icon { font-size: 24px; margin-bottom: 6px; }
-  .cat-name { font-size: 13px; font-weight: 600; color: var(--text); }
-  .cat-desc { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
-
-  .checkmark {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: var(--c, var(--accent));
-    display: none;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .cat-card.selected .checkmark { display: flex; }
-
-  .checkmark svg { width: 12px; height: 12px; }
-
-  .submit-wrap {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    padding: 12px 16px 24px;
-    background: linear-gradient(0deg, var(--bg) 60%, transparent);
-  }
-
-  .submit-btn {
-    width: 100%;
-    padding: 16px;
-    border-radius: 14px;
-    border: none;
-    background: var(--accent);
-    color: #0f0e17;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .submit-btn.ready {
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  .submit-btn.ready:active { transform: scale(0.98); }
-
-  .success-screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 40px;
-    z-index: 100;
-  }
-
-  .success-screen.show { display: flex; }
-
-  .success-icon {
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--accent2) 20%, transparent);
-    border: 2px solid var(--accent2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
-    margin-bottom: 24px;
-    animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  @keyframes pop {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .success-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 26px;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-
-  .success-sub {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 32px;
-    line-height: 1.5;
-  }
-
-  .back-btn {
-    padding: 12px 28px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  .counter-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: color-mix(in srgb, var(--accent) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 12px;
-    color: var(--accent);
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-
-  .connecting {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  .dot-anim::after {
-    content: '...';
-    animation: dots 1.5s infinite;
-  }
-
-  @keyframes dots {
-    0%, 20% { content: '.'; }
-    40% { content: '..'; }
-    60%, 100% { content: '...'; }
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FFF9F0;
+  --yellow: #FFD93D;
+  --orange: #FF6B35;
+  --pink: #FF6B9D;
+  --green: #06D6A0;
+  --blue: #4CC9F0;
+  --text: #1a1a2e;
+  --muted: #8888aa;
+  --white: #ffffff;
+  --shadow: 3px 3px 0px #1a1a2e;
+  --shadow-sm: 2px 2px 0px #1a1a2e;
+}
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255,217,61,0.2) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(255,107,157,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(76,201,240,0.15) 0%, transparent 35%);
+  color: var(--text);
+  font-family: 'Nunito Sans', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 110px;
+}
+.doodle { position: fixed; pointer-events: none; z-index: 0; opacity: 0.1; font-size: 30px; }
+.d1 { top: 6%; left: 3%; transform: rotate(-20deg); }
+.d2 { top: 14%; right: 5%; transform: rotate(15deg); }
+.d3 { bottom: 28%; left: 2%; transform: rotate(10deg); }
+.d4 { bottom: 18%; right: 4%; transform: rotate(-15deg); }
+.hero {
+  position: relative; z-index: 1;
+  padding: 28px 20px 18px;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-block;
+  background: var(--yellow);
+  border: 2px solid var(--text);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 32px; font-weight: 900;
+  line-height: 1.1; margin-bottom: 6px;
+}
+.hero-title .accent {
+  color: var(--orange);
+  position: relative; display: inline-block;
+}
+.hero-title .accent::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 0; right: 0;
+  height: 5px; background: var(--yellow);
+  border-radius: 3px; z-index: -1;
+}
+.hero-sub { font-size: 13px; color: var(--muted); font-weight: 600; }
+.section { position: relative; z-index: 1; padding: 16px 16px 0; }
+.section-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+.group-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.group-btn {
+  padding: 12px 4px;
+  border-radius: 12px;
+  border: 2px solid var(--text);
+  background: var(--white);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.group-btn:hover { transform: translate(-1px,-2px); box-shadow: 3px 4px 0 var(--text); }
+.group-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--text); }
+.group-btn.active {
+  background: var(--yellow);
+  transform: translate(-1px,-2px);
+  box-shadow: 3px 4px 0 var(--text);
+}
+.divider {
+  margin: 18px 16px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--text) 0, var(--text) 6px, transparent 6px, transparent 14px);
+  opacity: 0.1;
+}
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  padding: 0 16px;
+  position: relative; z-index: 1;
+}
+.cat-card {
+  border-radius: 16px;
+  border: 2px solid var(--text);
+  background: var(--white);
+  padding: 14px 12px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  position: relative;
+}
+.cat-card:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--text); }
+.cat-card:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--text); }
+.cat-card.selected { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--text); }
+.cat-card[data-id="kemiskinan"].selected { background: #FFE8D6; }
+.cat-card[data-id="konflik"].selected { background: #FFE0E0; }
+.cat-card[data-id="budaya"].selected { background: #EDE0FF; }
+.cat-card[data-id="pendidikan"].selected { background: #D6FFF0; }
+.cat-card[data-id="lingkungan"].selected { background: #DFFFD6; }
+.cat-card[data-id="teknologi"].selected { background: #D6F0FF; }
+.cat-card[data-id="gender"].selected { background: #FFD6EE; }
+.cat-card[data-id="kriminal"].selected { background: #FFF8D6; }
+.checkmark {
+  position: absolute; top: 8px; right: 8px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--green); border: 2px solid var(--text);
+  display: none; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 900; color: var(--text);
+  box-shadow: 1px 1px 0 var(--text);
+}
+.cat-card.selected .checkmark { display: flex; }
+.cat-icon { font-size: 26px; margin-bottom: 6px; }
+.cat-name { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; }
+.cat-desc { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.3; font-weight: 600; }
+.counter-badge {
+  display: inline-flex; align-items: center;
+  background: var(--orange); color: white;
+  border: 2px solid var(--text); border-radius: 20px;
+  padding: 1px 8px; font-size: 11px; font-weight: 800;
+  margin-left: 6px; box-shadow: var(--shadow-sm);
+}
+.submit-wrap {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 12px 16px 30px;
+  background: linear-gradient(0deg, var(--bg) 70%, transparent);
+  z-index: 10;
+}
+.submit-btn {
+  width: 100%; padding: 16px;
+  border-radius: 14px; border: 2px solid #ccc;
+  background: #eee; color: #aaa;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  cursor: not-allowed; transition: all 0.15s;
+}
+.submit-btn.ready {
+  background: var(--orange); color: white;
+  border-color: var(--text); cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.submit-btn.ready:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--text); }
+.submit-btn.ready:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--text); }
+.success-screen {
+  display: none; position: fixed; inset: 0;
+  background: var(--bg); align-items: center;
+  justify-content: center; flex-direction: column;
+  text-align: center; padding: 40px; z-index: 100;
+}
+.success-screen.show { display: flex; }
+.success-blob {
+  width: 100px; height: 100px;
+  background: var(--green);
+  border: 3px solid var(--text); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px; margin-bottom: 20px;
+  box-shadow: 5px 5px 0 var(--text);
+  animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes pop { from { transform: scale(0) rotate(-10deg); } to { transform: scale(1) rotate(0); } }
+.success-confetti {
+  position: absolute; font-size: 22px;
+  animation: cffall 1s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes cffall {
+  from { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  to { transform: translateY(80px) rotate(360deg); opacity: 0; }
+}
+.success-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 28px; font-weight: 900; margin-bottom: 8px;
+}
+.success-sub {
+  font-size: 13px; color: var(--muted); font-weight: 600;
+  margin-bottom: 28px; line-height: 1.5; max-width: 280px;
+}
+.back-btn {
+  padding: 14px 28px; border-radius: 12px;
+  border: 2px solid var(--text); background: var(--yellow);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900; cursor: pointer;
+  box-shadow: var(--shadow); transition: all 0.15s;
+}
+.back-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--text); }
 </style>
 </head>
 <body>
+<div class="doodle d1">✏️</div>
+<div class="doodle d2">🔎</div>
+<div class="doodle d3">📰</div>
+<div class="doodle d4">💡</div>
 
 <div class="hero">
-  <div class="hero-eyebrow">Etnografi Digital</div>
-  <h1 class="hero-title">Sosiologi Scanner 🔬</h1>
-  <p class="hero-sub">Temukan gejala sosial dari koran — laporkan ke kelas!</p>
+  <div class="hero-badge">🔬 Etnografi Digital</div>
+  <h1 class="hero-title">Sosiologi<br><span class="accent">Scanner</span></h1>
+  <p class="hero-sub">Temukan gejala sosial dari koran kamu!</p>
 </div>
 
-<div id="main-content">
-  <div class="connecting"><span class="dot-anim">Menghubungkan ke database</span></div>
-</div>
+<div id="main-content"></div>
 
 <div class="submit-wrap">
-  <button class="submit-btn" id="submit-btn" onclick="submitVote()">Kirim Temuan</button>
+  <button class="submit-btn" id="submit-btn" onclick="submitVote()">Pilih kelompok & gejala dulu</button>
 </div>
 
 <div class="success-screen" id="success-screen">
-  <div class="success-icon">✓</div>
-  <div class="success-title">Temuan Terkirim!</div>
-  <div class="success-sub" id="success-msg">Kontribusimu sudah masuk ke peta gejala sosial kelas.</div>
-  <button class="back-btn" onclick="resetForm()">Kirim Lagi</button>
+  <div style="position:relative;width:100%;display:flex;justify-content:center;" id="confetti-area">
+    <div class="success-blob">✓</div>
+  </div>
+  <div class="success-title">Yeay, terkirim! 🎉</div>
+  <div class="success-sub" id="success-msg">Temuanmu sudah masuk ke peta kelas!</div>
+  <button class="back-btn" onclick="resetForm()">➕ Kirim lagi</button>
 </div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, runTransaction, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAmeoRLm2qq48uSv9CbML7RB5abKakn73I",
@@ -336,100 +270,75 @@ const CATEGORIES = [
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 let selectedGroup = null;
 let selectedCats = new Set();
 
 function renderMain() {
-  const content = document.getElementById('main-content');
-  content.innerHTML = `
+  document.getElementById('main-content').innerHTML = `
     <div class="section">
-      <div class="section-label">Kelompokmu</div>
+      <div class="section-label">👥 Kelompokmu</div>
       <div class="group-grid">
-        ${[1,2,3,4].map(n => `
-          <button class="group-btn ${selectedGroup === n ? 'active' : ''}" onclick="selectGroup(${n})">
-            Kel. ${n}
-          </button>
-        `).join('')}
+        ${[1,2,3,4].map(n => `<button class="group-btn ${selectedGroup===n?'active':''}" onclick="selectGroup(${n})">Kel. ${n}</button>`).join('')}
       </div>
     </div>
     <div class="divider"></div>
-    <div class="section" style="padding-bottom: 8px;">
-      <div class="section-label">
-        Gejala sosial yang kamu temukan
-        ${selectedCats.size > 0 ? `<span class="counter-badge">${selectedCats.size} dipilih</span>` : ''}
-      </div>
+    <div class="section" style="margin-bottom:12px;">
+      <div class="section-label">🗞️ Gejala yang kamu temukan${selectedCats.size>0?`<span class="counter-badge">${selectedCats.size}</span>`:''}</div>
     </div>
     <div class="cat-grid">
-      ${CATEGORIES.map(c => `
-        <div class="cat-card ${selectedCats.has(c.id) ? 'selected' : ''}" data-id="${c.id}" onclick="toggleCat('${c.id}')">
-          <div class="checkmark">
-            <svg viewBox="0 0 12 12" fill="none">
-              <path d="M2 6l3 3 5-5" stroke="#0f0e17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+      ${CATEGORIES.map(c=>`
+        <div class="cat-card ${selectedCats.has(c.id)?'selected':''}" data-id="${c.id}" onclick="toggleCat('${c.id}')">
+          <div class="checkmark">✓</div>
           <div class="cat-icon">${c.icon}</div>
           <div class="cat-name">${c.label}</div>
           <div class="cat-desc">${c.desc}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-  updateSubmitBtn();
-}
-
-window.selectGroup = function(n) {
-  selectedGroup = n;
-  renderMain();
-};
-
-window.toggleCat = function(id) {
-  if (selectedCats.has(id)) selectedCats.delete(id);
-  else selectedCats.add(id);
-  renderMain();
-};
-
-function updateSubmitBtn() {
+        </div>`).join('')}
+    </div>`;
   const btn = document.getElementById('submit-btn');
   if (selectedGroup && selectedCats.size > 0) {
     btn.classList.add('ready');
-    btn.textContent = `Kirim ${selectedCats.size} Temuan →`;
+    btn.textContent = `🚀 Kirim ${selectedCats.size} temuan!`;
   } else {
     btn.classList.remove('ready');
-    btn.textContent = 'Pilih kelompok & gejala dulu';
+    btn.textContent = !selectedGroup ? '👆 Pilih kelompokmu dulu' : '👆 Pilih gejala sosialnya';
   }
 }
 
-window.submitVote = async function() {
+window.selectGroup = n => { selectedGroup = n; renderMain(); };
+window.toggleCat = id => { selectedCats.has(id) ? selectedCats.delete(id) : selectedCats.add(id); renderMain(); };
+
+window.submitVote = async () => {
   if (!selectedGroup || selectedCats.size === 0) return;
   const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Mengirim...';
-  btn.classList.remove('ready');
-
+  btn.textContent = '⏳ Mengirim...'; btn.classList.remove('ready');
   try {
-    for (const catId of selectedCats) {
-      const catRef = ref(db, `votes/${catId}`);
-      await runTransaction(catRef, (current) => (current || 0) + 1);
-    }
-    const groupRef = ref(db, `groups/${selectedGroup}`);
-    await runTransaction(groupRef, () => true);
-
-    const msg = `Kelompok ${selectedGroup} menemukan: ${[...selectedCats].map(id => CATEGORIES.find(c=>c.id===id)?.label).join(', ')}`;
-    document.getElementById('success-msg').textContent = msg;
+    for (const catId of selectedCats) await runTransaction(ref(db, `votes/${catId}`), v => (v||0)+1);
+    await runTransaction(ref(db, `groups/${selectedGroup}`), () => true);
+    document.getElementById('success-msg').textContent =
+      `Kelompok ${selectedGroup} menemukan: ${[...selectedCats].map(id=>CATEGORIES.find(c=>c.id===id)?.label).join(', ')}`;
+    spawnConfetti();
     document.getElementById('success-screen').classList.add('show');
   } catch(e) {
-    btn.textContent = 'Gagal kirim, coba lagi';
-    btn.classList.add('ready');
+    btn.textContent = '❌ Gagal, coba lagi'; btn.classList.add('ready');
   }
 };
 
-window.resetForm = function() {
-  selectedGroup = null;
-  selectedCats = new Set();
+function spawnConfetti() {
+  const area = document.getElementById('confetti-area');
+  ['🎉','⭐','✨','🌟','💫','🎊','🎈'].forEach((em, i) => {
+    const el = document.createElement('div');
+    el.className = 'success-confetti';
+    el.textContent = em;
+    el.style.cssText = `left:${15+Math.random()*70}%;top:0;animation-delay:${i*0.08}s`;
+    area.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  });
+}
+
+window.resetForm = () => {
+  selectedGroup = null; selectedCats = new Set();
   document.getElementById('success-screen').classList.remove('show');
   renderMain();
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Kirim Temuan';
 };
 
 renderMain();
