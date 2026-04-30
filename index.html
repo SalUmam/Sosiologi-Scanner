@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sosiologi Scanner - Input Siswa</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -17,26 +17,35 @@ body {
   overflow-x: hidden; height: 100vh; position: relative;
 }
 
+/* --- PERBAIKAN LOCK SCROLL --- */
 .screen {
   position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
   transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.6s ease;
-  padding-bottom: 120px;
 }
+
 #start-screen {
   background: var(--yellow); z-index: 50; display: flex; flex-direction: column;
   align-items: center; justify-content: center; text-align: center; padding: 20px;
+  position: fixed; /* Kunci layar di tempat */
+  height: 100vh; width: 100%; overflow: hidden; touch-action: none;
 }
 #start-screen.hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-#form-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
+
+#form-screen { 
+  opacity: 0; pointer-events: none; transform: translateY(20px); 
+  padding-bottom: 140px; /* Ruang agar tombol tidak menutupi konten */
+}
 #form-screen.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
+/* --- STYLE ELEMEN --- */
 .start-icon { font-size: 80px; animation: bounce 2s infinite; filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.2)); }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-.start-title { font-family: 'Nunito', sans-serif; font-size: 40px; font-weight: 900; line-height: 1.1; margin: 20px 0 10px; color: var(--text); }
-.start-desc { font-size: 16px; font-weight: 700; margin-bottom: 40px; color: #444; }
+.start-title { font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900; line-height: 1.1; margin: 20px 0 10px; color: var(--text); }
+.start-desc { font-size: 16px; font-weight: 700; margin-bottom: 40px; color: #444; padding: 0 10px; }
+
 .btn-start {
   background: var(--orange); color: white; border: 3px solid var(--text);
-  padding: 16px 40px; font-family: 'Nunito', sans-serif; font-size: 20px;
+  padding: 16px 40px; font-family: 'Nunito', sans-serif; font-size: 18px;
   font-weight: 900; border-radius: 50px; box-shadow: var(--shadow); cursor: pointer;
   transition: all 0.2s; text-transform: uppercase;
 }
@@ -46,41 +55,40 @@ body {
 .hero-title { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900; }
 .section { padding: 16px 20px 0; }
 .section-label { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+
 .group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .group-btn, .func-btn {
   padding: 12px; border-radius: 12px; border: 2px solid var(--text);
   background: var(--white); font-family: 'Nunito', sans-serif; font-weight: 800;
   box-shadow: var(--shadow-sm); transition: all 0.2s; cursor: pointer;
 }
-.group-btn.active { background: var(--blue); color: white; box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
+.group-btn.active { background: var(--blue); color: white; border-width: 3px;}
 .func-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.func-btn.active.positif { background: var(--green); color: var(--text); box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
-.func-btn.active.negatif { background: var(--orange); color: white; box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
+.func-btn.active.positif { background: var(--green); border-width: 3px;}
+.func-btn.active.negatif { background: var(--orange); color: white; border-width: 3px;}
 
 input[type="text"] {
   width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--text);
   font-family: 'Nunito Sans', sans-serif; font-size: 16px; font-weight: 700;
-  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
 }
 
-.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px; margin-bottom: 40px;}
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px; margin-top: 10px;}
 .cat-card {
   border-radius: 16px; border: 2px solid var(--text); background: var(--white);
-  padding: 12px; text-align: center; box-shadow: var(--shadow-sm);
-  transition: all 0.2s; cursor: pointer;
+  padding: 12px; text-align: center; box-shadow: var(--shadow-sm); cursor: pointer;
 }
-.cat-card.selected { transform: translateY(-4px); box-shadow: 4px 6px 0 var(--text); border-width: 3px; background: var(--yellow); }
+.cat-card.selected { background: var(--yellow); border-width: 3px; transform: translateY(-2px); }
 .cat-icon { font-size: 28px; }
-.cat-name { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900; margin-top: 5px; }
+.cat-name { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 900; margin-top: 5px; line-height: 1.2;}
 
 .submit-wrap { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px 20px; background: var(--bg); border-top: 3px solid var(--text); z-index: 10; }
 .submit-btn {
   width: 100%; padding: 16px; border-radius: 12px; border: 3px solid var(--muted);
   background: #eee; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
-  color: var(--muted); cursor: not-allowed; transition: all 0.2s;
+  color: var(--muted); cursor: not-allowed;
 }
 .submit-btn.ready { background: var(--green); color: var(--text); border-color: var(--text); box-shadow: var(--shadow); cursor: pointer; }
-.submit-btn.ready:active { transform: translateY(4px); box-shadow: 0 0 0 var(--text); }
 
 #success-screen {
   position: fixed; inset: 0; background: var(--blue); z-index: 100;
@@ -127,8 +135,8 @@ input[type="text"] {
     </div>
   </div>
 
-  <div class="section" style="margin-bottom: 10px;">
-    <div class="section-label">4. Termasuk Gejala Sosial Apa?</div>
+  <div class="section">
+    <div class="section-label">4. Termasuk Ragam Gejala Apa?</div>
   </div>
   <div class="cat-grid" id="cat-container"></div>
 
@@ -140,7 +148,7 @@ input[type="text"] {
 <div id="success-screen">
   <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
   <h2 style="font-family:'Nunito',sans-serif; font-size:32px; font-weight:900; margin-bottom:10px;">Data Terkirim!</h2>
-  <p style="font-size: 16px; margin-bottom: 30px;">Coba lihat ke layar proyektor di depan kelas! (Siapkan lisan untuk solusinya ya)</p>
+  <p style="font-size: 16px; margin-bottom: 30px;">Coba lihat ke layar proyektor di depan kelas!<br><br><i>(Siapkan lisan untuk menjelaskan solusinya ya!)</i></p>
   <button class="btn-start" style="background:var(--yellow); color:var(--text);" onclick="resetForm()">Input Berita Lain</button>
 </div>
 
@@ -159,21 +167,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// 10 KATEGORI LENGKAP
 const CATEGORIES = [
-  { id: 'kemiskinan', label: 'Kemiskinan', icon: '🏚️' },
-  { id: 'konflik', label: 'Konflik Sosial', icon: '⚡' },
-  { id: 'budaya', label: 'Budaya', icon: '🎭' },
+  { id: 'ekonomi', label: 'Ekonomi & Kemiskinan', icon: '💰' },
+  { id: 'politik', label: 'Politik & Kebijakan', icon: '🗳️' },
+  { id: 'hukum', label: 'Hukum & Kriminal', icon: '🚨' },
+  { id: 'budaya', label: 'Budaya & Gaya Hidup', icon: '🎭' },
+  { id: 'teknologi', label: 'Teknologi & Digital', icon: '📱' },
   { id: 'pendidikan', label: 'Pendidikan', icon: '📚' },
-  { id: 'lingkungan', label: 'Lingkungan', icon: '🌿' },
-  { id: 'teknologi', label: 'Teknologi', icon: '📱' },
-  { id: 'gender', label: 'Gender', icon: '⚖️' },
-  { id: 'kriminal', label: 'Kriminalitas', icon: '🔍' },
+  { id: 'lingkungan', label: 'Lingkungan Alam', icon: '🌿' },
+  { id: 'konflik', label: 'Konflik & Kekerasan', icon: '⚡' },
+  { id: 'kesehatan', label: 'Kesehatan Masyarakat', icon: '🏥' },
+  { id: 'gender', label: 'Keluarga & Gender', icon: '🚻' },
 ];
 
 let selGroup = null;
 let selSifat = null;
 let selCat = null;
 
+// Render Kategori
 document.getElementById('cat-container').innerHTML = CATEGORIES.map(c => `
   <div class="cat-card" id="c-${c.id}" onclick="setCat('${c.id}')">
     <div class="cat-icon">${c.icon}</div>
@@ -184,6 +196,7 @@ document.getElementById('cat-container').innerHTML = CATEGORIES.map(c => `
 window.mulaiAplikasi = () => {
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('form-screen').classList.add('active');
+  window.scrollTo(0,0);
 };
 
 window.setGroup = (n) => {
@@ -233,7 +246,7 @@ window.submitData = async () => {
       title: judul,
       sifat: selSifat,
       kategori: catInfo.label,
-      bg: catInfo.icon, // simpan icon untuk warna mading
+      bg: catInfo.icon,
       time: Date.now()
     });
 
