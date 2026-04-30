@@ -4,17 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sosiologi Scanner — Layar Utama</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #FFFBF0; --yellow: #FFD93D; --orange: #FF6B35; --green: #06D6A0;
+  --bg: #e8dbce; /* Warna papan kayu terang */
+  --yellow: #FFD93D; --orange: #FF6B35; --green: #06D6A0;
   --text: #1a1a2e; --muted: #7777aa; --white: #ffffff;
 }
 body {
   background-color: var(--bg);
-  background-image: radial-gradient(var(--muted) 1px, transparent 1px);
-  background-size: 30px 30px; color: var(--text); font-family: 'Nunito Sans', sans-serif;
+  background-image: radial-gradient(#cba477 1px, transparent 1px); /* Motif papan corkboard */
+  background-size: 20px 20px; color: var(--text); font-family: 'Nunito Sans', sans-serif;
   height: 100vh; overflow: hidden; display: flex; flex-direction: column;
 }
 
@@ -31,11 +32,37 @@ body {
 .header-title { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; }
 
 .main { flex: 1; display: flex; position: relative; overflow: hidden; padding-bottom: 50px; }
-.bubble-stage { flex: 1; position: relative; }
+.sticky-stage { flex: 1; position: relative; padding: 20px; }
+
+/* STICKY NOTES STYLE */
+.sticky-note {
+  position: absolute;
+  width: 220px;
+  min-height: 200px;
+  padding: 20px;
+  background: #fbf579; /* Warna khas sticky note */
+  box-shadow: 3px 5px 10px rgba(0,0,0,0.15);
+  display: flex; flex-direction: column;
+  border-bottom-right-radius: 20px 5px; /* Efek melengkung */
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn { 0% { transform: scale(0) rotate(0); opacity: 0; } }
+
+.sn-pin {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 15px; height: 15px; border-radius: 50%; background: #e74c3c;
+  box-shadow: -1px -1px 3px rgba(0,0,0,0.2) inset, 2px 3px 5px rgba(0,0,0,0.2);
+}
+.sn-cat { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 900; color: #555; margin-top: 5px; text-transform: uppercase; border-bottom: 1px dashed #aaa; padding-bottom: 5px;}
+.sn-title { font-family: 'Kalam', cursive; font-size: 22px; font-weight: 700; color: #111; flex: 1; margin: 10px 0; line-height: 1.2; }
+.sn-footer { display: flex; justify-content: space-between; align-items: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; }
+.sn-sifat { padding: 2px 8px; border-radius: 5px; color: white; }
+.sn-sifat.positif { background: var(--green); color: var(--text); border: 1px solid var(--text); }
+.sn-sifat.negatif { background: var(--orange); border: 1px solid var(--text); }
 
 .sidebar {
   width: 280px; border-left: 3px solid rgba(26,26,46,0.1); padding: 20px 16px;
-  background: rgba(255,255,255,0.8); z-index: 5; display: flex; flex-direction: column;
+  background: rgba(255,255,255,0.85); z-index: 5; display: flex; flex-direction: column;
 }
 .sidebar-title { font-family: 'Nunito', sans-serif; font-weight: 900; margin-bottom: 12px; }
 
@@ -52,17 +79,8 @@ body {
 }
 .ticker-content { display: flex; white-space: nowrap; animation: ticker 25s linear infinite; }
 @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-.news-item { margin-right: 50px; font-size: 18px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+.news-item { margin-right: 60px; font-size: 18px; font-weight: 700; display: inline-flex; align-items: center; gap: 12px; }
 .news-tag { background: var(--yellow); color: var(--text); padding: 2px 8px; border-radius: 8px; font-size: 14px; font-weight: 900; }
-.news-func { background: var(--green); color: var(--text); padding: 2px 8px; border-radius: 8px; font-size: 14px; font-weight: 900; }
-
-.bubble {
-  position: absolute; border-radius: 50%; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; border: 4px solid var(--text);
-  transition: all 1s cubic-bezier(0.34,1.2,0.64,1); box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
-  animation: float 5s ease-in-out infinite; background: white;
-}
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 .group-indicators { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .group-chip {
@@ -71,7 +89,9 @@ body {
 }
 .group-chip.active { background: var(--green); color: var(--text); border-color: var(--text); }
 
-.reset-btn { position: fixed; top: 80px; left: 16px; font-size: 12px; padding: 6px 12px; cursor: pointer; z-index: 100;}
+.top-controls { position: fixed; top: 80px; left: 16px; display: flex; gap: 10px; z-index: 100; }
+.control-btn { font-size: 12px; padding: 6px 12px; cursor: pointer; border: 2px solid var(--text); border-radius: 8px; font-weight: 900; background: white; transition: 0.2s;}
+.control-btn:hover { background: var(--yellow); }
 </style>
 </head>
 <body>
@@ -81,13 +101,15 @@ body {
   <div class="header-title">Peta Gejala Sosial Kelas (Fase E)</div>
 </div>
 
-<button class="reset-btn" onclick="resetAll()">🔄 Reset Data</button>
+<div class="top-controls">
+  <button class="control-btn" onclick="toggleFullScreen()">🖵 Fullscreen</button>
+  <button class="control-btn" onclick="resetAll()">🔄 Reset Data</button>
+</div>
 
 <div class="main">
-  <div class="bubble-stage" id="bubble-stage"></div>
+  <div class="sticky-stage" id="sticky-stage"></div>
   <div class="sidebar">
-    <div class="sidebar-title">🏆 Top Gejala Sosial</div>
-    <div id="bar-list"></div>
+    <div class="sidebar-title">🏅 Kesiapan Kelompok</div>
     <div class="group-indicators" id="group-indicators">
       <div class="group-chip" id="gd-1">Kel. 1</div>
       <div class="group-chip" id="gd-2">Kel. 2</div>
@@ -97,9 +119,9 @@ body {
 </div>
 
 <div class="ticker-wrap">
-  <div class="ticker-label">🔴 LIVE NEWS</div>
+  <div class="ticker-label">🔴 LIVE REPORT</div>
   <div class="ticker-content" id="ticker-content">
-    <div class="news-item">Menunggu observasi dari siswa...</div>
+    <div class="news-item" style="color: var(--yellow);">Menunggu kelompok mengirim hasil analisis observasi digital...</div>
   </div>
 </div>
 
@@ -118,82 +140,83 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const CATEGORIES = [
-  { id: 'kemiskinan', label: 'Kemiskinan', icon: '🏚️', border: '#FF6B35' },
-  { id: 'konflik', label: 'Konflik Sosial', icon: '⚡', border: '#FF4444' },
-  { id: 'budaya', label: 'Budaya', icon: '🎭', border: '#9B5DE5' },
-  { id: 'pendidikan', label: 'Pendidikan', icon: '📚', border: '#06D6A0' },
-  { id: 'lingkungan', label: 'Lingkungan', icon: '🌿', border: '#4CAF50' },
-  { id: 'teknologi', label: 'Teknologi', icon: '📱', border: '#4CC9F0' },
-  { id: 'gender', label: 'Gender', icon: '⚖️', border: '#FF6B9D' },
-  { id: 'kriminal', label: 'Kriminalitas', icon: '🔍', border: '#F9A826' },
-];
+let groups = {}, newsArray = [];
 
-let votes = {}, groups = {}, positions = {}, newsArray = [];
+// Warna-warni Sticky Note agar tidak membosankan
+const noteColors = ['#fbf579', '#ff9eaa', '#85e3ff', '#b9fbc0'];
 
-// Bubble Logic
-function renderBubbles() {
-  const stage = document.getElementById('bubble-stage');
-  const W = stage.offsetWidth, H = stage.offsetHeight;
-  const ids = CATEGORIES.map(c=>c.id).filter(id=>(votes[id]||0)>0);
-  
-  if (!ids.length) return;
-  const total = ids.reduce((s,id) => s+(votes[id]||0), 0) || 1;
-  const MAX_R = Math.min(W,H) * 0.22, MIN_R = 60;
-  
-  ids.forEach((id, index) => {
-    const cat = CATEGORIES.find(c=>c.id===id);
-    const v = votes[id]||0;
-    const r = Math.round(MIN_R + (MAX_R-MIN_R) * Math.sqrt(v/total));
-    
-    // Simple positioning
-    let x = (W / (ids.length + 1)) * (index + 1);
-    let y = H / 2 + (index % 2 === 0 ? -30 : 30);
-
-    let el = document.getElementById('bubble-'+id);
-    if (!el) {
-      el = document.createElement('div');
-      el.id = 'bubble-'+id; el.className = 'bubble';
-      stage.appendChild(el);
-    }
-
-    el.style.width = `${r*2}px`; el.style.height = `${r*2}px`;
-    el.style.left = `${x-r}px`; el.style.top = `${y-r}px`;
-    el.style.borderColor = cat.border;
-    
-    el.innerHTML = `
-      <div style="font-size:${r*0.5}px;line-height:1;">${cat.icon}</div>
-      <div style="font-family:'Nunito',sans;font-size:${r*0.2}px;font-weight:900;">${cat.label}</div>
-      <div style="font-family:'Nunito',sans;font-size:${r*0.25}px;font-weight:900;color:${cat.border};">${v}</div>
-    `;
-  });
-}
-
-// News Ticker Logic
+// Render Sticky Note Logic
 onChildAdded(ref(db, 'news'), snap => {
   const data = snap.val();
+  
+  // --- 1. Masukkan ke Live Ticker ---
   const ticker = document.getElementById('ticker-content');
-  if(newsArray.length === 0) ticker.innerHTML = ''; // Hapus teks menunggu
+  if(newsArray.length === 0) ticker.innerHTML = ''; 
   newsArray.push(data);
   
   const newsHtml = `
     <div class="news-item">
       <span>[Kel. ${data.group}] "${data.title}"</span>
       <span class="news-tag">${data.kategori}</span>
-      <span class="news-func">Pendekatan: ${data.fungsi}</span>
+      <span style="color:var(--yellow); font-size:24px; margin-left:20px;">•</span>
     </div>
   `;
   ticker.innerHTML += newsHtml;
+
+  // --- 2. Buat Sticky Note di Papan ---
+  const stage = document.getElementById('sticky-stage');
+  const maxW = stage.clientWidth - 240; 
+  const maxH = stage.clientHeight - 240;
+  
+  // Posisi dan Rotasi Acak
+  const randomX = Math.max(20, Math.floor(Math.random() * maxW));
+  const randomY = Math.max(20, Math.floor(Math.random() * maxH));
+  const randomRot = Math.floor(Math.random() * 16) - 8; // rotasi antara -8 sampai 8 derajat
+  const randomColor = noteColors[Math.floor(Math.random() * noteColors.length)];
+  
+  const sifatClass = data.sifat === 'Negatif' ? 'negatif' : 'positif';
+
+  const note = document.createElement('div');
+  note.className = 'sticky-note';
+  note.style.left = `${randomX}px`;
+  note.style.top = `${randomY}px`;
+  note.style.transform = `rotate(${randomRot}deg)`;
+  note.style.background = randomColor;
+  
+  note.innerHTML = `
+    <div class="sn-pin"></div>
+    <div class="sn-cat">${data.bg} ${data.kategori}</div>
+    <div class="sn-title">${data.title}</div>
+    <div class="sn-footer">
+      <span>T${data.group}</span>
+      <span class="sn-sifat ${sifatClass}">${data.sifat}</span>
+    </div>
+  `;
+  
+  stage.appendChild(note);
 });
 
-onValue(ref(db,'votes'), snap => { votes = snap.val()||{}; renderBubbles(); });
+// Indikator Kesiapan Kelompok
 onValue(ref(db,'groups'), snap => {
   groups = snap.val()||{};
   [1,2,3].forEach(n => document.getElementById('gd-'+n).classList.toggle('active', !!groups[n]));
 });
 
+// Fitur Fullscreen
+window.toggleFullScreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      alert(`Error Fullscreen: ${err.message}`);
+    });
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+};
+
 window.resetAll = async () => {
-  if(!confirm('Reset semua data?')) return;
+  if(!confirm('Bersihkan semua Sticky Notes di papan?')) return;
   await remove(ref(db,'votes')); await remove(ref(db,'groups')); await remove(ref(db,'news'));
   location.reload();
 };

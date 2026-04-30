@@ -17,7 +17,6 @@ body {
   overflow-x: hidden; height: 100vh; position: relative;
 }
 
-/* --- ANIMASI & LAYAR --- */
 .screen {
   position: absolute; top: 0; left: 0; width: 100%; min-height: 100vh;
   transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.6s ease;
@@ -31,7 +30,6 @@ body {
 #form-screen { opacity: 0; pointer-events: none; transform: translateY(20px); }
 #form-screen.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
-/* --- START MENU UI --- */
 .start-icon { font-size: 80px; animation: bounce 2s infinite; filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.2)); }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 .start-title { font-family: 'Nunito', sans-serif; font-size: 40px; font-weight: 900; line-height: 1.1; margin: 20px 0 10px; color: var(--text); }
@@ -44,7 +42,6 @@ body {
 }
 .btn-start:active { transform: translateY(4px); box-shadow: 0 0 0 var(--text); }
 
-/* --- FORM UI --- */
 .hero { padding: 30px 20px 10px; text-align: center; }
 .hero-title { font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900; }
 .section { padding: 16px 20px 0; }
@@ -57,7 +54,8 @@ body {
 }
 .group-btn.active { background: var(--blue); color: white; box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
 .func-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.func-btn.active { background: var(--pink); color: white; box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
+.func-btn.active.positif { background: var(--green); color: var(--text); box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
+.func-btn.active.negatif { background: var(--orange); color: white; box-shadow: 2px 4px 0 var(--text); transform: translateY(-2px); border-width: 3px;}
 
 input[type="text"] {
   width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--text);
@@ -65,7 +63,7 @@ input[type="text"] {
   box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); margin-bottom: 10px;
 }
 
-.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px; }
+.cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 20px; margin-bottom: 40px;}
 .cat-card {
   border-radius: 16px; border: 2px solid var(--text); background: var(--white);
   padding: 12px; text-align: center; box-shadow: var(--shadow-sm);
@@ -84,7 +82,6 @@ input[type="text"] {
 .submit-btn.ready { background: var(--green); color: var(--text); border-color: var(--text); box-shadow: var(--shadow); cursor: pointer; }
 .submit-btn.ready:active { transform: translateY(4px); box-shadow: 0 0 0 var(--text); }
 
-/* --- SUCCESS SCREEN --- */
 #success-screen {
   position: fixed; inset: 0; background: var(--blue); z-index: 100;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -97,9 +94,9 @@ input[type="text"] {
 <body>
 
 <div id="start-screen" class="screen">
-  <div class="start-icon">🔎📰</div>
-  <h1 class="start-title">Etnografi<br>Digital</h1>
-  <p class="start-desc">Pindai gejala sosial dari koran dan hidupkan datanya ke layar kelas!</p>
+  <div class="start-icon">🔎📱</div>
+  <h1 class="start-title">Laboratorium<br>Gejala Sosial</h1>
+  <p class="start-desc">Temukan fenomena sosial di internet dan kirimkan datanya ke layar kelas!</p>
   <button class="btn-start" onclick="mulaiAplikasi()">Mulai Observasi 🚀</button>
 </div>
 
@@ -123,20 +120,17 @@ input[type="text"] {
   </div>
 
   <div class="section">
-    <div class="section-label">3. Fungsi Sosiologi yang Cocok?</div>
+    <div class="section-label">3. Sifat Gejala Sosial?</div>
     <div class="func-grid">
-      <button class="func-btn" onclick="setFunc('Kritis')" id="f-Kritis">🤔 Kritis</button>
-      <button class="func-btn" onclick="setFunc('Analitis')" id="f-Analitis">📊 Analitis</button>
-      <button class="func-btn" onclick="setFunc('Kreatif')" id="f-Kreatif">💡 Kreatif</button>
-      <button class="func-btn" onclick="setFunc('Solutif')" id="f-Solutif">✅ Solutif</button>
+      <button class="func-btn positif" onclick="setSifat('Positif')" id="s-Positif">✅ Positif</button>
+      <button class="func-btn negatif" onclick="setSifat('Negatif')" id="s-Negatif">⚠️ Negatif</button>
     </div>
   </div>
 
   <div class="section" style="margin-bottom: 10px;">
     <div class="section-label">4. Termasuk Gejala Sosial Apa?</div>
   </div>
-  <div class="cat-grid" id="cat-container">
-    </div>
+  <div class="cat-grid" id="cat-container"></div>
 
   <div class="submit-wrap">
     <button class="submit-btn" id="submit-btn" onclick="submitData()">Lengkapi Data Dulu</button>
@@ -146,7 +140,7 @@ input[type="text"] {
 <div id="success-screen">
   <div style="font-size: 80px; margin-bottom: 20px;">🎉</div>
   <h2 style="font-family:'Nunito',sans-serif; font-size:32px; font-weight:900; margin-bottom:10px;">Data Terkirim!</h2>
-  <p style="font-size: 16px; margin-bottom: 30px;">Coba lihat ke layar proyektor di depan kelas!</p>
+  <p style="font-size: 16px; margin-bottom: 30px;">Coba lihat ke layar proyektor di depan kelas! (Siapkan lisan untuk solusinya ya)</p>
   <button class="btn-start" style="background:var(--yellow); color:var(--text);" onclick="resetForm()">Input Berita Lain</button>
 </div>
 
@@ -159,9 +153,7 @@ const firebaseConfig = {
   authDomain: "sosiologi-scanner.firebaseapp.com",
   databaseURL: "https://sosiologi-scanner-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "sosiologi-scanner",
-  storageBucket: "sosiologi-scanner.firebasestorage.app",
-  messagingSenderId: "203021862305",
-  appId: "1:203021862305:web:208fab5cb454bf06a937e0"
+  storageBucket: "sosiologi-scanner.firebasestorage.app"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -179,10 +171,9 @@ const CATEGORIES = [
 ];
 
 let selGroup = null;
-let selFunc = null;
+let selSifat = null;
 let selCat = null;
 
-// Render Categories
 document.getElementById('cat-container').innerHTML = CATEGORIES.map(c => `
   <div class="cat-card" id="c-${c.id}" onclick="setCat('${c.id}')">
     <div class="cat-icon">${c.icon}</div>
@@ -201,10 +192,10 @@ window.setGroup = (n) => {
   selGroup = n; checkForm();
 };
 
-window.setFunc = (f) => {
-  ['Kritis','Analitis','Kreatif','Solutif'].forEach(i => document.getElementById('f-'+i).classList.remove('active'));
-  document.getElementById('f-'+f).classList.add('active');
-  selFunc = f; checkForm();
+window.setSifat = (s) => {
+  ['Positif','Negatif'].forEach(i => document.getElementById('s-'+i).classList.remove('active'));
+  document.getElementById('s-'+s).classList.add('active');
+  selSifat = s; checkForm();
 };
 
 window.setCat = (id) => {
@@ -216,7 +207,7 @@ window.setCat = (id) => {
 window.checkForm = () => {
   const judul = document.getElementById('judul-berita').value.trim();
   const btn = document.getElementById('submit-btn');
-  if(selGroup && selFunc && selCat && judul.length > 3) {
+  if(selGroup && selSifat && selCat && judul.length > 3) {
     btn.classList.add('ready'); btn.textContent = "🚀 KIRIM KE PROYEKTOR";
   } else {
     btn.classList.remove('ready'); btn.textContent = "Lengkapi Data Dulu";
@@ -225,25 +216,24 @@ window.checkForm = () => {
 
 window.submitData = async () => {
   const judul = document.getElementById('judul-berita').value.trim();
-  if(!selGroup || !selFunc || !selCat || judul.length < 3) return;
+  if(!selGroup || !selSifat || !selCat || judul.length < 3) return;
 
   const btn = document.getElementById('submit-btn');
   btn.textContent = "⏳ Mengirim..."; btn.classList.remove('ready');
 
   try {
-    // Kumpulkan update point/bubble
     const updates = {};
     updates[`votes/${selCat}`] = increment(1);
     updates[`groups/${selGroup}`] = true;
     await update(ref(db), updates);
 
-    // Kirim data untuk News Ticker
-    const catName = CATEGORIES.find(c=>c.id===selCat).label;
+    const catInfo = CATEGORIES.find(c=>c.id===selCat);
     await push(ref(db, 'news'), {
       group: selGroup,
       title: judul,
-      fungsi: selFunc,
-      kategori: catName,
+      sifat: selSifat,
+      kategori: catInfo.label,
+      bg: catInfo.icon, // simpan icon untuk warna mading
       time: Date.now()
     });
 
@@ -257,9 +247,9 @@ window.submitData = async () => {
 window.resetForm = () => {
   document.getElementById('success-screen').classList.remove('show');
   document.getElementById('judul-berita').value = '';
-  selGroup = null; selFunc = null; selCat = null;
+  selGroup = null; selSifat = null; selCat = null;
   [1,2,3].forEach(i => document.getElementById('g'+i).classList.remove('active'));
-  ['Kritis','Analitis','Kreatif','Solutif'].forEach(i => document.getElementById('f-'+i).classList.remove('active'));
+  ['Positif','Negatif'].forEach(i => document.getElementById('s-'+i).classList.remove('active'));
   CATEGORIES.forEach(c => document.getElementById('c-'+c.id).classList.remove('selected'));
   checkForm(); window.scrollTo(0,0);
 };
